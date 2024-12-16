@@ -384,6 +384,15 @@ function MovieDetails() {
     const addFilm = (newFilm) => {
         setMovies([...movies, { ...newFilm, showDetails: false, isFavorite: false }]);
     };
+    const sortByRating = () => {
+        const sortedMovies = [...movies].sort((a, b) => b.rating - a.rating);
+        setMovies(sortedMovies);
+    };
+
+    const sortByYear = () => {
+        const sortedMovies = [...movies].sort((a, b) => b.releaseYear - a.releaseYear);
+        setMovies(sortedMovies);
+    };
 
     const handleToggleDetails = (index) => {
         const updatedMovies = [...movies];
@@ -392,10 +401,16 @@ function MovieDetails() {
     };
 
     const handleToggleFavorite = (index) => {
-        const updatedMovies = [...movies];
-        updatedMovies[index].isFavorite = !updatedMovies[index].isFavorite;
-        setMovies(updatedMovies);
+        setMovies((prevMovies) =>
+            prevMovies.map((movie, i) =>
+                i === index
+                    ? { ...movie, isFavorite: !movie.isFavorite }
+                    : movie
+            )
+        );
     };
+    
+    
 
     const totalPages = Math.ceil(movies.length / moviesPerPage);
 
@@ -406,10 +421,30 @@ function MovieDetails() {
 
     return (
         <div>
+            <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginBottom: "20px" }}>
+                <button
+                    onClick={sortByRating}
+                    style={styles.button}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = styles.buttonHover.backgroundColor}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = styles.button.backgroundColor}
+                >
+                    Trier par note
+                </button>
+                <button
+                    onClick={sortByYear}
+                    style={styles.button}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = styles.buttonHover.backgroundColor}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = styles.button.backgroundColor}
+                >
+                    Trier par année
+                </button>
+            </div>
             <MovieList
                 movies={paginatedMovies}
                 onToggleDetails={handleToggleDetails}
                 onToggleFavorite={handleToggleFavorite}
+                
+                
             />
             <div style={styles.pagination}>
                 {Array.from({ length: totalPages }, (_, index) => (
